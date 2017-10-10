@@ -111,11 +111,11 @@ end
   end
 
   def play
-    while over? == true && turn_count < 10
+    while over? != true && draw? !=true && turn_count < 10
       turn
     end
     if won? != false
-        puts "Congratulations #{winner(board)}!"
+        puts "Congratulations #{winner}!"
     elsif draw? == true
       puts "Cat's Game!"
     end
