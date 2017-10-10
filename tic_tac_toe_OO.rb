@@ -114,9 +114,10 @@ end
     while over? == true && turn_count < 10
       turn
     end
-    if won?(board) != false
+    if won? != false
         puts "Congratulations #{winner(board)}!"
-    elsif draw?(board) == true
+    elsif draw? == true
       puts "Cat's Game!"
     end
+  end
 end
