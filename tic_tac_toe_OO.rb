@@ -23,40 +23,100 @@ end
   end
 
   def current_player
-    turn_count % 2 == 0 ? "X" : "O"
+    current_player = turn_count % 2 == 0 ? "X" : "O"
   end
 
-  def position_taken?
-    @board[@index] != " " && @board[@index] != ""
+  def position_taken?(index)
+    @board[index] != " " && @board[index] != ""
   end
 
-  def valid_move?
-    @index.between?(0,8) && !position_taken?
+  def valid_move?(index)
+    index.between?(0,8) && !position_taken?(index)
   end
 
-  def move
-    @board[@index] = current_player
+  def move (index, token = "X")
+    @board[index] = current_player
   end
 
   def turn
     puts "Please enter 1-9:"
     input = gets.strip
-    @index = input_to_index(input)
-    if valid_move?
-      move
+    index = input_to_index(input)
+    if valid_move?(index)
+      move(index)
       display_board
     else
       turn
     end
   end
 
-  def play
-    count = 1
-    while count < 10
-      count += 1
-      turn
+  def won?
+    current = []
+    someone_won = false
+    WIN_COMBINATIONS.each do |win|
+      win_index_1 = win[0]
+      win_index_2 = win[1]
+      win_index_3 = win[2]
+      position_1 = @board[win_index_1]
+      position_2 = @board[win_index_2]
+      position_3 = @board[win_index_3]
+      if position_1 == "X" && position_2 == "X" && position_3 == "X"
+        someone_won = true
+        current = [win_index_1, win_index_2, win_index_3]
+      elsif position_1 == "O" && position_2 == "O" && position_3 == "O"
+        someone_won = true
+        current = [win_index_1, win_index_2, win_index_3]
+      else
+        false
+      end
+    end
+    if someone_won
+      current
+    else
+      false
     end
   end
 
+  def full?
+    if @board.all? {|draw| draw == "X" || draw == "O"}
+      true
+    else
+      false
+    end
+  end
 
+  def draw?
+    if full? == true && won? == false
+      true
+    else
+      false
+    end
+  end
+
+  def over?
+    if full? == true || won? != false
+      true
+    else
+      false
+    end
+  end
+
+  def winner
+    if won? == false
+      nil
+    else
+      current = won?
+      @board[current[1]]
+    end
+  end
+
+  def play
+    while over? == true && turn_count < 10
+      turn
+    end
+    if won?(board) != false
+        puts "Congratulations #{winner(board)}!"
+    elsif draw?(board) == true
+      puts "Cat's Game!"
+    end
 end
